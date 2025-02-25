@@ -12,6 +12,16 @@ def __scalarProduct(a: np.array, b: np.array) -> float:
     
     return product
 
+def __frobeniusNorm(A: np.array) -> float:
+    assert(A.ndim == 2)
+
+    norm = 0.0
+    for i in range(A.shape[0]):
+        for j in range(A.shape[1]):
+            norm += A[i, j] * A[i, j]
+
+    return math.sqrt(norm)
+
 def __l2Norm(x: np.array) -> float:
     assert(x.ndim == 1)
 
@@ -53,6 +63,9 @@ def __getUpperTriangleHalf(Q: np.array, A: np.array) -> np.array:
     # return np.linalg.inv(Q) @ A
 
 def __backSubstitution(A: np.array, b: np.array) ->np.array:
+    assert(A.ndim == 2)
+    assert(b.ndim == 1)
+
     # A = U, b = y
     sol = np.zeros_like(b)
     sol[-1] = b[-1] / A[-1, -1]
@@ -67,12 +80,19 @@ def __backSubstitution(A: np.array, b: np.array) ->np.array:
     return sol
     
 
+def getQR(A: np.array) -> tuple[np.array, np.array]:
+    Q = __gramSchmidtProcess(A)
+    Q = __normalizeMatrix(Q)
+    R = __getUpperTriangleHalf(Q, A)
+
+    return (Q, R)
+
 def solveLinearSystem(A: np.array, b: np.array) -> tuple[np.array, np.array, np.array]:    
     Q = __gramSchmidtProcess(A)
     Q = __normalizeMatrix(Q)
     R = __getUpperTriangleHalf(Q, A)
     x = __backSubstitution(R, Q.T @ b)
 
-    print(x)
+    return (Q, R, x)
 
 
