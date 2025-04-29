@@ -60,7 +60,6 @@ def __getUpperTriangleHalf(Q: np.array, A: np.array) -> np.array:
     assert(A.ndim == 2)
 
     return Q.T @ A
-    # return np.linalg.inv(Q) @ A
 
 def __backSubstitution(A: np.array, b: np.array) ->np.array:
     assert(A.ndim == 2)
@@ -88,9 +87,7 @@ def getQR(A: np.array) -> tuple[np.array, np.array]:
     return (Q, R)
 
 def solveLinearSystem(A: np.array, b: np.array) -> tuple[np.array, np.array, np.array]:    
-    Q = __gramSchmidtProcess(A)
-    Q = __normalizeMatrix(Q)
-    R = __getUpperTriangleHalf(Q, A)
+    Q, R = getQR(A)
     x = __backSubstitution(R, Q.T @ b)
 
     return (Q, R, x)
